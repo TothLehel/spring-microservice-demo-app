@@ -7,9 +7,6 @@ services:
     extends:
       service: network-deploy-service
     deploy:
-      resources:
-        limits:
-          memory: 700m
     environment:
       SPRING_RABBITMQ_HOST: "rabbit"
 
