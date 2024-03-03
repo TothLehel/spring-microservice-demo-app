@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: "gatewayserver"
+
+  # location of configserver, configserver: is an indication that we need to connect to it and use it as a config
+  # optional: if configserver is not available, then start the microservice anyway
+  config:
+    import: optional:configserver:http://localhost:8071/
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    gateway: # telling to my gateway
+      discovery: # connect to eureka server
+        locator: # locate all the details about microservices,
+          #enabled: true # gateway will use it to forward traffic from clients to microservices
+          enabled: false # gateway won't fetch every endpoint that it finds
+          lowerCaseServiceId: true # now you can call lowercase microservices in postman
+      httpclient: # applied for ALL microservice, even if you have circuit breaker
+        connect-timeout: 1000 # time allowed to connect to a microservice
+        response-timeout: 10s # max time the gateway will wait for a response
+  data:
+    redis:
+      connect-timeout: 2s
+      host: localhost
+      port: 6379
+      timeout: 1s
+
+# enable and expose all management endpoints supported by the actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      enabled: true #enabled gateway related endpoints inside actuator
+  info:
+    env:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+  # eureka related properties in configserver
+
+info:
+  app:
+    name: "gatewayserver"
+    description: "Demobank Gateway server application"
+    version: "1.0.0"
+
+logging:
+  level:
+    com:
+      bankingdemo:
+        gatewayserver: DEBUG
+
+resilience4j.circuitbreaker:
+  configs:
+    default: # config.setName("accountsCircuitBreaker"), default config could be named with #accountsCircuitBreaker:
+      slidingWindowSize: 10 # monitor at least 10 requests, then decide to switch to any status or not
+      permittedNumberOfCallsInHalfOpenState: 2 # how many calls are allowed in half open status
+      failureRateThreshold: 50 # if more than 50% request are failed, then move from closed to open
+      waitDurationInOpenState: 10000 # in millis, wait time to move from open to half open

@@ -1,0 +1,11 @@
+build:
+  version: "1.0"
+
+accounts:
+  message: "Welcome to Dummy bank accounts related PROD APIs "
+  contactDetails:
+    name: "Donald Donovald - Product Owner"
+    email: "Donald@demobank.com"
+  onCallSupport:
+    - (555) 777-1234
+    - (555) 777-1345

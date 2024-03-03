@@ -1,0 +1,53 @@
+spring:
+   application:
+      name: configserver
+   profiles:
+      #active: native # file or classpath
+      active: git
+   cloud:
+      config:
+         server:
+            #native:
+               # inner file
+               #search-locations: classpath:/config
+               # folder file
+               # earch-locations: file:///C://config
+             git: 
+               uri: "https://github.com/TothLehel/spring-microservice-demo-app-config.git"
+               # branch
+               default-label: main
+               timeout: 5 #seconds
+               clone-on-start: true #please clone to local system before start
+               force-pull: true # override all local changes on start/restart     
+  
+   #webhook in github: http://localhost:8071/monitor -> triggers automatic config refresh request
+   rabbitmq:
+     host: "localhost"
+     port: 5672
+     username: "guest"
+     password: "guest"
+  
+          
+encrypt:
+   key: 4JdXndX0jVstsKhDzJJxS4vbbYgO6Cs3 #/encrypt /decrypt postman calls
+
+server:
+   port: 8071
+   
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveliness-state:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}

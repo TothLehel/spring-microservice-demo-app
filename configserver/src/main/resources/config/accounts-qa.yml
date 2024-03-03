@@ -1,0 +1,11 @@
+build:
+  version: "2.0"
+
+accounts:
+  message: "Welcome to Dummy bank accounts related QA APIs "
+  contactDetails:
+    name: "John John - Developer"
+    email: "john@demobank.com"
+  onCallSupport:
+    - (555) 666-1234
+    - (555) 666-1345
