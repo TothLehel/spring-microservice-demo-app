@@ -38,8 +38,9 @@ public class LoansControllerImpl implements ILoansController {
 			@RequestHeader("demobank-correlation-id") String correlationId,
 			@RequestParam @Pattern(regexp = "(^$|[0-9]{10})",
 					message = "Mobile number must be 10 digits") String mobileNumber) {
-		log.debug("demobank-correlation-id found {}" , correlationId);
+		log.debug("fetchLoanDetails method start");
 		LoansDto fetchLoan = loansService.fetchLoan(mobileNumber);
+		log.debug("fetchLoanDetails method end");
 		return ResponseEntity.status(HttpStatus.OK).body(fetchLoan);
     }
 

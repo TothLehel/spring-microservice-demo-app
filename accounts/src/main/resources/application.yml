@@ -101,6 +101,8 @@ logging:
     com:
       bankingdemo:
         accounts: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]" #opentelemetry generates this dynamic values
 
 resilience4j.circuitbreaker:
   configs:

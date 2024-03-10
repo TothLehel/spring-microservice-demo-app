@@ -1,16 +1,18 @@
 @echo off
-cd /d "%~dp0"  REM Change to the directory of this batch file
 
-pushd ./accounts
-mvn spring-boot:build-image -DskipTests
-popd
+rem Array of directories
+set "directories=accounts cards loans configserver eurekaserver gatewayserver"
 
-pushd ./cards
-mvn spring-boot:build-image -DskipTests
-popd
-
-pushd ./loans
-mvn spring-boot:build-image -DskipTests
-popd
+rem Loop through each directory
+for %%d in (%directories%) do (
+    rem Change directory
+    cd %%d
+    
+    rem Build image
+    mvn spring-boot:build-image -DskipTests
+    
+    rem Move back to parent directory
+    cd ..
+)
 
 echo Process completed.

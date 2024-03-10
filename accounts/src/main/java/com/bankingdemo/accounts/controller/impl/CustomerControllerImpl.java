@@ -25,8 +25,10 @@ public class CustomerControllerImpl implements ICustomerController {
 
     @Override
     public ResponseEntity<CustomerDetailsDto> fetchCustomerDetails(String correlationId, String mobileNumber) {
-        log.debug("demobank-correlation-id found {}" , correlationId);
+        //log.debug("demobank-correlation-id found {}" , correlationId); opentelemetry will send this
+        log.debug("fetchCustomerDetails method start");
         CustomerDetailsDto customerDetailsDto = customerService.fetchCustomerDetails(mobileNumber, correlationId);
+        log.debug("fetchCustomerDetails method end");
         return ResponseEntity.status(HttpStatus.OK).body(customerDetailsDto);
     }
 }
