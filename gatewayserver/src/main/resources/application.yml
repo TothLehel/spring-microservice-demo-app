@@ -27,6 +27,13 @@ spring:
       host: localhost
       port: 6379
       timeout: 1s
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # on startup, download a public certificate from keycloak
+          jwk-set-uri: "http://localhost:7080/realms/master/protocol/openid-connect/certs"
+
 
 # enable and expose all management endpoints supported by the actuator
 management:
@@ -43,6 +50,7 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
+
 
   # eureka related properties in configserver
 

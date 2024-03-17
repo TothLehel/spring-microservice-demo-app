@@ -1,0 +1,143 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: accounts
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ''
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  #spring.datasource.url: jdbc:h2:mem:testdb
+  #spring.datasource.username: sa
+  #spring.datasource.password:
+  #spring.datasource.dricerClassName: org.h2.driver
+  #spring.h2.console.enabled: true
+  #spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+  #spring.jpa.hibernate.ddl-auto: update
+
+  #datasource:
+  #  url: jdbc:mysql://localhost:3306/accountsdb
+  #  username: root
+  #  password: root
+
+  #jpa:
+  #  show-sql: true
+    # always run schema.sql on startup
+  #sql:
+  #  init:
+  #    mode: always
+
+  # location of configserver, configserver: is an indication that we need to connect to it and use it as a config
+  # optional: if configserver is not available, then start the microservice anyway
+  #config:
+  #  import: optional:configserver:http://localhost:8071/
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
+  # -------- use when configuration happens inside the application ---------
+  # config.import: application_qa.yml,application_prod.yml
+  # profiles.active: qa
+
+  # -------- configured in config server now ---------
+build:
+  version: 3.0
+
+  # accounts.message: Welcome to the demo bank account microservice application!
+  # accounts.contactDetails.name: John Doe
+  # accounts.contactDetails.email: john@demobank.com
+  # accounts.onCallSupport: (555) 555-1234,(555) 555-1334
+
+  # enable and expose all management endpoints supported by the actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true #for demo purposes, enable an endpoint to disable services
+    health:
+      probes:
+        enabled: true
+  health:
+    readiness-state:
+      enabled: true
+    liveliness-state:
+      enabled: true
+  info:
+    env:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+eureka:
+  instance:
+    # hostnames will make sense in DNS addresses, so we use ips now
+    preferIpAddress: true
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/
+
+info:
+  app:
+    name: "accounts"
+    description: "Demobank accounts application"
+    version: "1.0.0"
+
+
+
+logging:
+  level:
+    com:
+      bankingdemo:
+        accounts: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]" #opentelemetry generates this dynamic values
+
+resilience4j.circuitbreaker:
+  configs:
+    default: # config.setName("accountsCircuitBreaker"), default config could be named with #accountsCircuitBreaker:
+      slidingWindowSize: 10 # monitor at least 10 requests, then decide to switch to any status or not
+      permittedNumberOfCallsInHalfOpenState: 2 # how many calls are allowed in half open status
+      failureRateThreshold: 50 # if more than 50% request are failed, then move from closed to open
+      waitDurationInOpenState: 10000 # in millis, wait time to move from open to half open
+
+resilience4j.retry:
+  configs:
+    default:
+      maxRetryAttempts: 3
+      waitDuration: 500
+      enableExponentialBackoff: true
+      exponentialBackoffMultiplier: 2
+      ignoreExceptions:
+        - java.lang.NullPointerException
+      retryExceptions: # kinda counters ignoreExceptions, only for retryExceptions will resilience4j run
+        - java.util.concurrent.TimeoutException
+
+resilience4j.ratelimiter:
+  configs:
+    default:
+      timeoutDuration: 1000 # ms. maximum time a thread can wait for the new refresh period to arrive
+      limitRefreshPeriod: 5000 #ms. for every 5 seconds, only limitForPeriod calls are allowed
+      limitForPeriod: 1

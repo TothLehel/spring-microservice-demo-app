@@ -1,7 +1,7 @@
 @echo off
 
 rem Array of directories
-set "directories=accounts cards loans configserver eurekaserver gatewayserver"
+set "directories=accounts cards loans configserver eurekaserver gatewayserver message"
 
 rem Loop through each directory
 for %%d in (%directories%) do (

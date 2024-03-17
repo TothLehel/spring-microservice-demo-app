@@ -11,7 +11,7 @@ spring:
                # inner file
                #search-locations: classpath:/config
                # folder file
-               # earch-locations: file:///C://config
+               # search-locations: file:///C://config
              git: 
                uri: "https://github.com/TothLehel/spring-microservice-demo-app-config.git"
                # branch
