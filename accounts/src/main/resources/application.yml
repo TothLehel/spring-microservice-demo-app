@@ -9,3 +9,24 @@ spring:
     active: local
   config:
     import: optional:configserver:http://localhost:8071/
+
+  cloud:
+    function:
+      definition: updateCommunication # Consumer functions name. this is how you add multiple: updateCommunication;otherUpdateCommunication
+    stream:
+      bindings:
+        updateCommunication-in-0:
+          destination: communication-sent
+          group: ${spring.application.name}
+        sendCommunication-out-0:
+          destination: send-communication
+      # Kafka solution
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: guest
+#    password: guest

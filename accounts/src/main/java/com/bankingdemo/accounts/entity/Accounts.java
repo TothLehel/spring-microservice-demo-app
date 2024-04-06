@@ -26,6 +26,8 @@ public class Accounts extends BaseEntity{
 	private String accountType;
 	
 	private String branchAddress;
+
+	private Boolean communicationSw;
 	
 	@Column(insertable = false, updatable = false, name = "customer_id")
 	private Long customerId;
